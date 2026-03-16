@@ -209,7 +209,7 @@ drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
 # Print flight conditions 
 
 
-#prints()
-#plot_traj()
+prints()
+plot_traj()
 draw()
-#plot_all()
+plot_all()
