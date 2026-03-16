@@ -180,7 +180,7 @@ sustainer.add_surfaces([nose, sustainer_fins], [sustainer_length, .2])
     lower_button_position =  0.9266,
     angular_position = 45,
     upper_button_position = 0.6266
-)
+)"""
 
 booster_flight = Flight(
     rocket = booster,
@@ -204,7 +204,7 @@ sustainer_flight = Flight(
 solution = sustainer_flight.get_solution_at_time(50, 50)
 x = float(solution[1])
 y = float(solution[2])
-drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))"""
+drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
 
 # Print flight conditions 
 
