@@ -2,6 +2,9 @@ from rocketpy import Environment, SolidMotor, Rocket, Flight, Parachute, NoseCon
 
 import datetime, math
 
+booster_burnout = 1.7
+sustainer_delay = 2
+
 sustainer_radius = 0.0475
 booster_radius = 0.0575
 
@@ -27,7 +30,7 @@ sustainer_motor_grain_density = (sustainer_motor_total_mass - sustainer_motor_dr
 
 varDate = datetime.datetime(2026, 7, 1, hour = 12)
 
-env =  Environment(latitude = 55.4, longitude = -5.7, elevation = 15, date = varDate)
+env =  Environment(latitude = 55.44, longitude = -5.7, date = varDate)
 env.set_atmospheric_model(type = "Windy", file = "ICON") 
 
 def prints():
@@ -38,7 +41,7 @@ def prints():
 
     print("Drift Distance: ", drift)
 
-    print("Atmospheric Model \n")
+    print("\nAtmospheric Model")
     env.prints.atmospheric_conditions()
 
 def plot_traj():
@@ -53,6 +56,11 @@ def plot_all():
     booster_flight.plots.all()
     sustainer_flight.plots.all()
 
+def drag_sep():
+    booster_height = booster_flight.get_solution_at_time(booster_burnout + sustainer_delay)[3]
+    sustainer_height = sustainer_flight.get_solution_at_time(booster_burnout + sustainer_delay)[3]
+    print("Booster Height: ", booster_height, "\nSustainer Height: ", sustainer_height,"\nDistance at Ignition: ", sustainer_height - booster_height)
+
 booster_motor = SolidMotor(
     coordinate_system_orientation = "nozzle_to_combustion_chamber",
     center_of_dry_mass_position = booster_motor_length / 2,
@@ -66,7 +74,7 @@ booster_motor = SolidMotor(
     grain_separation = 0,
     grains_center_of_mass_position = booster_motor_length / 2,
     nozzle_radius = .01,
-    thrust_source = "Cerberus\\Sims\\RocketPy\\curves\\thrust one.rse"
+    thrust_source = "cerberus\\RocketPy\\curves\\thrust one.rse"
     )   
 
 sustainer_motor = SolidMotor(
@@ -82,14 +90,14 @@ sustainer_motor = SolidMotor(
     grain_separation = 0,
     grains_center_of_mass_position = sustainer_motor_length / 2,
     nozzle_radius = 0.01,
-    thrust_source = "Cerberus\\Sims\\RocketPy\\curves\\thrust two.rse"
+    thrust_source = "cerberus\\RocketPy\\curves\\thrust two.rse"
     )
 
 booster = Rocket(
     center_of_mass_without_motor = total_length - 1.83,
     coordinate_system_orientation = "tail_to_nose",
-    power_off_drag = "Cerberus\\Sims\\RocketPy\\curves\\drag one.csv",
-    power_on_drag = "Cerberus\\Sims\\RocketPy\\curves\\drag one.csv",
+    power_off_drag = "cerberus\\RocketPy\\curves\\drag one.csv",
+    power_on_drag = "cerberus\\RocketPy\\curves\\drag one.csv",
     inertia = [0.71, 0.71, 0.015],
     mass = 10.912,
     radius = sustainer_radius
@@ -99,8 +107,8 @@ booster = Rocket(
 sustainer = Rocket(
     center_of_mass_without_motor = 0.94,
     coordinate_system_orientation = "tail_to_nose",
-    power_off_drag = "Cerberus\\Sims\\RocketPy\\curves\\drag two.csv",
-    power_on_drag = "Cerberus\\Sims\\RocketPy\\curves\\drag two.csv",
+    power_off_drag = "cerberus\\RocketPy\\curves\\drag two.csv",
+    power_on_drag = "cerberus\\RocketPy\\curves\\drag two.csv",
     inertia = [1.75, 1.75, 0.01],
     mass = 4.856,
     radius = sustainer_radius
@@ -170,8 +178,7 @@ sustainer.add_parachute(
     name = "drogue", 
     cd_s = 0.2,
     trigger = "apogee",
-    sampling_rate = 1,      
-    lag = 5
+    sampling_rate = 5
     )
 
 sustainer.add_surfaces([nose, sustainer_fins], [sustainer_length, .2])
@@ -197,7 +204,7 @@ sustainer_flight = Flight(
     rail_length = 2,
     heading = env.wind_direction(15),
     inclination = 85,
-    initial_solution = booster_flight.get_solution_at_time(3.7),
+    initial_solution = booster_flight.get_solution_at_time(booster_burnout),
     verbose = True
 )
 
@@ -208,8 +215,8 @@ drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
 
 # Print flight conditions 
 
-
+drag_sep()
 prints()
 plot_traj()
 draw()
-plot_all()
+#plot_all()
