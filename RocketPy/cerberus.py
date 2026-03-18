@@ -30,7 +30,7 @@ sustainer_motor_grain_density = (sustainer_motor_total_mass - sustainer_motor_dr
 
 varDate = datetime.datetime(2026, 7, 1, hour = 12)
 
-env =  Environment(latitude = 55.44, longitude = -5.7, date = varDate)
+env =  Environment(latitude = 55.435108, longitude = -5.691520, date = varDate)
 env.set_atmospheric_model(type = "Windy", file = "ICON") 
 
 def prints():
