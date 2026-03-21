@@ -25,6 +25,8 @@ booster_motor_giir = 0.00725
 booster_motor_or = 0.027
 booster_motor_grain_number = 5
 booster_motor_grain_density = (booster_motor_total_mass - booster_motor_dry_mass) / ((booster_motor_length * math.pi * booster_motor_or**2) - (booster_motor_length * math.pi * booster_motor_giir**2))
+booster_xy_inertia = (1/12 * booster_motor_dry_mass * (3 * (booster_motor_or ** 2) + (booster_motor_length ** 2)))
+booster_tensor = [booster_xy_inertia, booster_xy_inertia, (.5 * booster_motor_dry_mass * booster_motor_or)]
 
 sustainer_motor_length = 0.5
 sustainer_motor_dry_mass = .641
@@ -33,6 +35,8 @@ sustainer_motor_giir = 0.001
 sustainer_motor_or = 0.027
 sustainer_motor_grain_number = 5
 sustainer_motor_grain_density = (sustainer_motor_total_mass - sustainer_motor_dry_mass) / ((sustainer_motor_length * math.pi * sustainer_motor_or**2) - (sustainer_motor_length * math.pi * sustainer_motor_giir**2))
+sustainer_xy_inertia = (1/12 * sustainer_motor_dry_mass * (3 * (sustainer_motor_or ** 2) + (sustainer_motor_length ** 2)))
+sustainer_tensor = [sustainer_xy_inertia, sustainer_xy_inertia, (.5 * sustainer_motor_dry_mass * sustainer_motor_or)]
 
 varDate = datetime.datetime(2026, 7, 1, hour = 12)
 
@@ -70,7 +74,7 @@ def drag_sep():
 booster_motor = SolidMotor(
     coordinate_system_orientation = "nozzle_to_combustion_chamber",
     center_of_dry_mass_position = booster_motor_length / 2,
-    dry_inertia = [0.022494808, 0.022494808, 0.000594864],
+    dry_inertia = sustainer_tensor,
     dry_mass = booster_motor_dry_mass,
     grain_density = booster_motor_grain_density,
     grain_initial_height = booster_motor_length / booster_motor_grain_number,
@@ -86,7 +90,7 @@ booster_motor = SolidMotor(
 sustainer_motor = SolidMotor(
     coordinate_system_orientation = "nozzle_to_combustion_chamber",
     center_of_dry_mass_position = sustainer_motor_length / 2,
-    dry_inertia = [0.0347597748333, 0.0347597748333, 0.000602883],
+    dry_inertia = booster_tensor,
     dry_mass = sustainer_motor_dry_mass,
     grain_density = sustainer_motor_grain_density,
     grain_initial_height = sustainer_motor_length / sustainer_motor_grain_number,
