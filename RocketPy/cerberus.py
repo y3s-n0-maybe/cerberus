@@ -2,6 +2,12 @@ from rocketpy import Environment, SolidMotor, Rocket, Flight, Parachute, NoseCon
 
 import datetime, math
 
+curves_dir = "cerberus\\RocketPy\\curves\\"
+sustainer_thrust = curves_dir + "thrust two.rse"
+sustainer_drag = curves_dir + "drag two.csv"
+booster_thrust = curves_dir + "thrust one.rse"
+booster_drag = curves_dir + "drag one.csv"
+
 booster_burnout = 1.7
 sustainer_delay = 2
 
@@ -74,7 +80,7 @@ booster_motor = SolidMotor(
     grain_separation = 0,
     grains_center_of_mass_position = booster_motor_length / 2,
     nozzle_radius = .01,
-    thrust_source = "cerberus\\RocketPy\\curves\\thrust one.rse"
+    thrust_source = booster_thrust
     )   
 
 sustainer_motor = SolidMotor(
@@ -90,14 +96,14 @@ sustainer_motor = SolidMotor(
     grain_separation = 0,
     grains_center_of_mass_position = sustainer_motor_length / 2,
     nozzle_radius = 0.01,
-    thrust_source = "cerberus\\RocketPy\\curves\\thrust two.rse"
+    thrust_source = sustainer_thrust
     )
 
 booster = Rocket(
     center_of_mass_without_motor = total_length - 1.83,
     coordinate_system_orientation = "tail_to_nose",
-    power_off_drag = "cerberus\\RocketPy\\curves\\drag one.csv",
-    power_on_drag = "cerberus\\RocketPy\\curves\\drag one.csv",
+    power_off_drag = booster_drag,
+    power_on_drag = booster_drag,
     inertia = [0.71, 0.71, 0.015],
     mass = 10.912,
     radius = sustainer_radius
@@ -107,8 +113,8 @@ booster = Rocket(
 sustainer = Rocket(
     center_of_mass_without_motor = 0.94,
     coordinate_system_orientation = "tail_to_nose",
-    power_off_drag = "cerberus\\RocketPy\\curves\\drag two.csv",
-    power_on_drag = "cerberus\\RocketPy\\curves\\drag two.csv",
+    power_off_drag = sustainer_drag,
+    power_on_drag = sustainer_drag,
     inertia = [1.75, 1.75, 0.01],
     mass = 4.856,
     radius = sustainer_radius
