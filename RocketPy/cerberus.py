@@ -11,8 +11,8 @@ booster_drag = curves_dir + "drag one.csv"
 booster_burnout = 1.7
 sustainer_delay = 2
 
-sustainer_radius = 0.0475
-booster_radius = 0.0575
+sustainer_radius = 0.048
+booster_radius = 0.0565
 
 total_length = 3.2
 sustainer_length = 2.1
@@ -109,7 +109,7 @@ booster = Rocket(
     power_off_drag = booster_drag,
     power_on_drag = booster_drag,
     inertia = [0.71, 0.71, 0.015],
-    mass = 10.912,
+    mass = 9.143,
     radius = sustainer_radius
 
 )
@@ -120,12 +120,12 @@ sustainer = Rocket(
     power_off_drag = sustainer_drag,
     power_on_drag = sustainer_drag,
     inertia = [1.75, 1.75, 0.01],
-    mass = 4.856,
+    mass = 3.162,
     radius = sustainer_radius
 )
 
 transition = Tail(
-    length = 0.095,
+    length = 0.09,
     top_radius =  sustainer_radius,
     bottom_radius = booster_radius,
     rocket_radius = booster_radius,
@@ -137,8 +137,8 @@ booster.add_motor(booster_motor, position = 0)
 sustainer.add_motor(sustainer_motor, position = 0)
 
 booster.add_parachute(
-    name = "main_one",
-    cd_s = 0.364829384952758926,
+    name = "Booster Chute",
+    cd_s = 0.36482938495,
     trigger = "apogee",
     sampling_rate = 1,
     lag = 5
@@ -177,8 +177,8 @@ nose = NoseCone (
 booster.add_surfaces([transition, nose, sustainer_fins], [1.095, total_length, total_length-1.9])
 
 sustainer.add_parachute(
-    name = "main_two", 
-    cd_s = 0.6,
+    name = "Sustainer Main", 
+    cd_s = 0.524894787288,
     trigger = 300,
     sampling_rate = 1,
     lag = 0
@@ -186,7 +186,7 @@ sustainer.add_parachute(
 
 sustainer.add_parachute(
     name = "drogue", 
-    cd_s = 0.2,
+    cd_s = 0.23379732528,
     trigger = "apogee",
     sampling_rate = 5
     )
@@ -218,7 +218,7 @@ sustainer_flight = Flight(
     verbose = True
 )
 
-solution = sustainer_flight.get_solution_at_time(50, 50)
+solution = sustainer_flight.get_solution_at_time(200, 50)
 x = float(solution[1])
 y = float(solution[2])
 drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
