@@ -30,7 +30,7 @@ booster_tensor = [booster_xy_inertia, booster_xy_inertia, (.5 * booster_motor_dr
 
 sustainer_motor_length = 0.5
 sustainer_motor_dry_mass = .641
-sustainer_motor_total_mass = 1.632
+sustainer_motor_total_mass = 1.654
 sustainer_motor_giir = 0.001
 sustainer_motor_or = 0.027
 sustainer_motor_grain_number = 5
@@ -42,6 +42,9 @@ varDate = datetime.datetime(2026, 7, 1, hour = 12)
 
 env =  Environment(latitude = 55.435108, longitude = -5.691520, date = varDate)
 env.set_atmospheric_model(type = "Windy", file = "ICON") 
+
+#env.set_atmospheric_model(type="custom_atmosphere", pressure=None, temperature=300, wind_u=[ (15, 8), (1000, 6) ], wind_v=[ (15, 0), (1000, 4.5) ], )
+
 
 def prints():
     print("Stage One \n")
@@ -109,8 +112,8 @@ booster = Rocket(
     power_off_drag = booster_drag,
     power_on_drag = booster_drag,
     inertia = [0.71, 0.71, 0.015],
-    mass = 9.143,
-    radius = sustainer_radius
+    mass = 10.282 + sustainer_motor_total_mass,
+    radius = booster_radius
 
 )
 
@@ -120,12 +123,12 @@ sustainer = Rocket(
     power_off_drag = sustainer_drag,
     power_on_drag = sustainer_drag,
     inertia = [1.75, 1.75, 0.01],
-    mass = 3.162,
+    mass = 6.493,
     radius = sustainer_radius
 )
 
 transition = Tail(
-    length = 0.09,
+    length = 0.095,
     top_radius =  sustainer_radius,
     bottom_radius = booster_radius,
     rocket_radius = booster_radius,
@@ -138,7 +141,7 @@ sustainer.add_motor(sustainer_motor, position = 0)
 
 booster.add_parachute(
     name = "Booster Chute",
-    cd_s = 0.36482938495,
+    cd_s = 0.8 * 3.1415926 * (.762**2),
     trigger = "apogee",
     sampling_rate = 1,
     lag = 5
@@ -149,8 +152,8 @@ booster.add_trapezoidal_fins(
     name = "Stage One Fins",
     n = 4,
     root_chord = 0.16,
-    span = 0.09,
-    sweep_length = 0.025,
+    span = 0.08,
+    sweep_length = 0.0252,
     tip_chord = 0.15,
     position = .2
 )
@@ -178,7 +181,7 @@ booster.add_surfaces([transition, nose, sustainer_fins], [1.095, total_length, t
 
 sustainer.add_parachute(
     name = "Sustainer Main", 
-    cd_s = 0.524894787288,
+    cd_s = 0.8 * 3.1415926 * (.914**2),
     trigger = 300,
     sampling_rate = 1,
     lag = 0
@@ -186,7 +189,7 @@ sustainer.add_parachute(
 
 sustainer.add_parachute(
     name = "drogue", 
-    cd_s = 0.23379732528,
+    cd_s = 0.8 * 3.1415926 * (.61**2),
     trigger = "apogee",
     sampling_rate = 5
     )
@@ -204,6 +207,7 @@ booster_flight = Flight(
     environment = env,
     rail_length = 2.0,
     inclination = 90,
+    heading = env.wind_direction(15),
     
     verbose = True
 )
@@ -212,8 +216,8 @@ sustainer_flight = Flight(
     rocket = sustainer,
     environment = env,
     rail_length = 2,
-    heading = env.wind_direction(15),
-    inclination = 85,
+    heading = 0,
+    inclination = 90,
     initial_solution = booster_flight.get_solution_at_time(booster_burnout),
     verbose = True
 )
@@ -227,6 +231,6 @@ drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
 
 drag_sep()
 prints()
-plot_traj()
-draw()
+#plot_traj()
+#draw()
 #plot_all()
