@@ -141,7 +141,7 @@ sustainer.add_motor(sustainer_motor, position = 0)
 
 booster.add_parachute(
     name = "Booster Chute",
-    cd_s = 0.8 * 3.1415926 * (.762**2),
+    cd_s = 0.8 * 3.1415926 * ((.762/2)**2),
     trigger = "apogee",
     sampling_rate = 1,
     lag = 5
@@ -181,7 +181,7 @@ booster.add_surfaces([transition, nose, sustainer_fins], [1.095, total_length, t
 
 sustainer.add_parachute(
     name = "Sustainer Main", 
-    cd_s = 0.8 * 3.1415926 * (.914**2),
+    cd_s = 0.8 * 3.1415926 * ((.914/2)**2),
     trigger = 300,
     sampling_rate = 1,
     lag = 0
@@ -189,7 +189,7 @@ sustainer.add_parachute(
 
 sustainer.add_parachute(
     name = "drogue", 
-    cd_s = 0.8 * 3.1415926 * (.61**2),
+    cd_s = 0.8 * 3.1415926 * ((.61/2)**2),
     trigger = "apogee",
     sampling_rate = 5
     )
