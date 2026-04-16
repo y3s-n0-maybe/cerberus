@@ -2,7 +2,7 @@ from rocketpy import Environment, SolidMotor, Rocket, Flight, Parachute, NoseCon
 
 import datetime, math
 
-curves_dir = "cerberus\\RocketPy\\curves\\"
+curves_dir = "C:\\Users\\Owner\\Desktop\\Rockets\\cerberus\\RocketPy\\curves\\"
 sustainer_thrust = curves_dir + "thrust two.rse"
 sustainer_drag = curves_dir + "drag two.csv"
 booster_thrust = curves_dir + "thrust one.rse"
@@ -11,8 +11,8 @@ booster_drag = curves_dir + "drag one.csv"
 booster_burnout = 1.7
 sustainer_delay = 2
 
-sustainer_radius = 0.048
-booster_radius = 0.0565
+sustainer_radius = 0.096/2
+booster_radius = 0.113/2
 
 total_length = 3.2
 sustainer_length = 2.1
@@ -72,7 +72,7 @@ def plot_all():
 def drag_sep():
     booster_height = booster_flight.get_solution_at_time(booster_burnout + sustainer_delay)[3]
     sustainer_height = sustainer_flight.get_solution_at_time(booster_burnout + sustainer_delay)[3]
-    print("Booster Height: ", booster_height, "\nSustainer Height: ", sustainer_height,"\nDistance at Ignition: ", sustainer_height - booster_height)
+    print("Booster Height: ", booster_height, "\nSustainer Height: ", sustainer_height,"\nDistance at Ignition: ", sustainer_height - booster_height, "\n")
 
 booster_motor = SolidMotor(
     coordinate_system_orientation = "nozzle_to_combustion_chamber",
@@ -107,23 +107,23 @@ sustainer_motor = SolidMotor(
     )
 
 booster = Rocket(
-    center_of_mass_without_motor = total_length - 1.83,
+    center_of_mass_without_motor = total_length - 1.75,
     coordinate_system_orientation = "tail_to_nose",
     power_off_drag = booster_drag,
     power_on_drag = booster_drag,
     inertia = [0.71, 0.71, 0.015],
-    mass = 10.282 + sustainer_motor_total_mass,
+    mass = 9.985 + sustainer_motor_total_mass,
     radius = booster_radius
 
 )
 
 sustainer = Rocket(
-    center_of_mass_without_motor = 0.94,
+    center_of_mass_without_motor = sustainer_length - 1.21,
     coordinate_system_orientation = "tail_to_nose",
     power_off_drag = sustainer_drag,
     power_on_drag = sustainer_drag,
     inertia = [1.75, 1.75, 0.01],
-    mass = 6.493,
+    mass = 6.288,
     radius = sustainer_radius
 )
 
@@ -207,7 +207,7 @@ booster_flight = Flight(
     environment = env,
     rail_length = 2.0,
     inclination = 90,
-    heading = env.wind_direction(15),
+    heading = round(env.wind_direction(20)),
     
     verbose = True
 )
@@ -231,6 +231,6 @@ drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
 
 drag_sep()
 prints()
-#plot_traj()
-#draw()
-#plot_all()
+plot_traj()
+draw()
+plot_all()
