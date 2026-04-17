@@ -1,6 +1,6 @@
 from rocketpy import Environment, SolidMotor, Rocket, Flight, Parachute, NoseCone, TrapezoidalFins, RailButtons, Function, Tail
 
-import datetime, math, matplotlib.pyplot as plt
+import datetime, math, matplotlib.pyplot as plt, rocketpy.tools as tls, numpy as np
 
 curves_dir = "C:\\Users\\Owner\\Desktop\\Rockets\\cerberus\\RocketPy\\curves\\"
 sustainer_thrust = curves_dir + "thrust two.rse"
@@ -45,6 +45,95 @@ env.set_atmospheric_model(type = "Windy", file = "ICON")
 
 #env.set_atmospheric_model(type="custom_atmosphere", pressure=None, temperature=300, wind_u=[ (15, 8), (1000, 6) ], wind_v=[ (15, 0), (1000, 4.5) ], )
 
+def aerodynamics(self, *, filename=None):  # pylint: disable=too-many-statements
+    """Prints out all Forces and Moments graphs available about the Flight
+
+    Parameters
+    ----------
+    filename : str | None, optional
+        The path the plot should be saved to. By default None, in which case
+        the plot will be shown instead of saved. Supported file endings are:
+        eps, jpg, jpeg, pdf, pgf, png, ps, raw, rgba, svg, svgz, tif, tiff
+        and webp (these are the formats supported by matplotlib).
+
+    Returns
+    -------
+    None
+    """
+
+    ax1 = plt.subplot()
+    ax1.plot(
+        self.aerodynamic_lift[: tls.find_closest(self.time_steps, self.apogee_time), 0],
+        self.aerodynamic_lift[: tls.find_closest(self.time_steps, self.apogee_time), 1],
+        label="Resultant",
+    )
+    ax1.plot(
+        self.R1[: tls.find_closest(self.time_steps, self.apogee_time), 0],
+        self.R1[: tls.find_closest(self.time_steps, self.apogee_time), 1],
+        label="R1",
+    )
+    ax1.plot(
+        self.R2[: tls.find_closest(self.time_steps, self.apogee_time), 0],
+        self.R2[: tls.find_closest(self.time_steps, self.apogee_time), 1],
+        label="R2",
+    )
+    ax1.set_xlim(0, self.apogee_time)
+    ax1.set_ylim(0, 3)
+    ax1.legend()
+    ax1.set_xlabel("Time (s)")
+    ax1.set_ylabel("Lift Force (N)")
+    ax1.set_title("Aerodynamic Lift Resultant Force")
+    ax1.grid()
+    plt.show()
+
+    ax2 = plt.subplot()
+    ax2.plot(
+        self.aerodynamic_drag[: tls.find_closest(self.time_steps, self.apogee_time), 0],
+        self.aerodynamic_drag[: tls.find_closest(self.time_steps, self.apogee_time), 1],
+    )
+    ax2.set_xlim(0, self.apogee_time)
+    ax2.set_ylim(0, 200)
+    ax2.set_xlabel("Time (s)")
+    ax2.set_ylabel("Drag Force (N)")
+    ax2.set_title("Aerodynamic Drag Force")
+    ax2.grid()
+    plt.show()
+
+    ax3 = plt.subplot()
+    ax3.plot(
+        self.aerodynamic_bending_moment[: tls.find_closest(self.time_steps, self.apogee_time), 0],
+        self.aerodynamic_bending_moment[: tls.find_closest(self.time_steps, self.apogee_time), 1],
+        label="Resultant",
+    )
+    ax3.plot(
+        self.M1[: tls.find_closest(self.time_steps, self.apogee_time), 0],
+        self.M1[: tls.find_closest(self.time_steps, self.apogee_time), 1],
+        label="M1",
+    )
+    ax3.plot(
+        self.M2[: tls.find_closest(self.time_steps, self.apogee_time), 0],
+        self.M2[: tls.find_closest(self.time_steps, self.apogee_time), 1],
+        label="M2",
+    )
+    ax3.set_xlim(0, self.apogee_time)
+    ax3.legend()
+    ax3.set_xlabel("Time (s)")
+    ax3.set_ylabel("Bending Moment (N m)")
+    ax3.set_title("Aerodynamic Bending Resultant Moment")
+    ax3.grid()
+    plt.show()
+
+    ax4 = plt.subplot()
+    ax4.plot(
+        self.aerodynamic_spin_moment[: tls.find_closest(self.time_steps, self.apogee_time), 0],
+        self.aerodynamic_spin_moment[: tls.find_closest(self.time_steps, self.apogee_time), 1],
+    )
+    ax4.set_xlim(0, self.apogee_time)
+    ax4.set_xlabel("Time (s)")
+    ax4.set_ylabel("Spin Moment (N m)")
+    ax4.set_title("Aerodynamic Spin Moment")
+    ax4.grid()
+    plt.show()
 
 def fluid_mechanics(self, *, filename=None):  # pylint: disable=too-many-statements
     """Prints out a summary of the Fluid Mechanics graphs available about
@@ -342,4 +431,4 @@ drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
 #plot_traj()
 #draw()
 #plot_all()
-fluid_mechanics(booster_flight)
+aerodynamics(sustainer_flight)
