@@ -1,6 +1,6 @@
 from rocketpy import Environment, SolidMotor, Rocket, Flight, Parachute, NoseCone, TrapezoidalFins, RailButtons, Function, Tail
 
-import datetime, math
+import datetime, math, matplotlib.pyplot as plt
 
 curves_dir = "C:\\Users\\Owner\\Desktop\\Rockets\\cerberus\\RocketPy\\curves\\"
 sustainer_thrust = curves_dir + "thrust two.rse"
@@ -45,6 +45,114 @@ env.set_atmospheric_model(type = "Windy", file = "ICON")
 
 #env.set_atmospheric_model(type="custom_atmosphere", pressure=None, temperature=300, wind_u=[ (15, 8), (1000, 6) ], wind_v=[ (15, 0), (1000, 4.5) ], )
 
+
+def fluid_mechanics(self, *, filename=None):  # pylint: disable=too-many-statements
+    """Prints out a summary of the Fluid Mechanics graphs available about
+    the Flight
+
+    Parameters
+    ----------
+    filename : str | None, optional
+        The path the plot should be saved to. By default None, in which case
+        the plot will be shown instead of saved. Supported file endings are:
+        eps, jpg, jpeg, pdf, pgf, png, ps, raw, rgba, svg, svgz, tif, tiff
+        and webp (these are the formats supported by matplotlib).
+
+    Returns
+    -------
+    None
+    """
+    plt.figure(figsize=(9, 16))
+
+    ax1 = plt.subplot()
+    ax1.plot(self.mach_number[:, 0], self.mach_number[:, 1])
+    ax1.set_xlim(0, self.t_final)
+    ax1.set_title("Mach Number")
+    ax1.set_xlabel("Time (s)")
+    ax1.set_ylabel("Mach Number")
+    ax1.grid()
+    plt.show()
+
+    ax2 = plt.subplot()
+    ax2.plot(self.reynolds_number[:, 0], self.reynolds_number[:, 1])
+    ax2.set_xlim(0, self.t_final)
+    ax2.ticklabel_format(style="sci", axis="y", scilimits=(0, 0))
+    ax2.set_title("Reynolds Number")
+    ax2.set_xlabel("Time (s)")
+    ax2.set_ylabel("Reynolds Number")
+    ax2.grid()
+    ax2.plot()
+    plt.show()
+
+    ax3 = plt.subplot()
+    ax3.plot(
+        self.dynamic_pressure[:, 0],
+        self.dynamic_pressure[:, 1],
+        label="Dynamic Pressure",
+    )
+    ax3.plot(
+        self.total_pressure[:, 0],
+        self.total_pressure[:, 1],
+        label="Total Pressure",
+    )
+    ax3.plot(
+        self.pressure[:, 0],
+        self.pressure[:, 1],
+        label="Static Pressure",
+    )
+    ax3.set_xlim(0, self.t_final)
+    ax3.legend()
+    ax3.ticklabel_format(style="sci", axis="y", scilimits=(0, 0))
+    ax3.set_title("Total and Dynamic Pressure")
+    ax3.set_xlabel("Time (s)")
+    ax3.set_ylabel("Pressure (Pa)")
+    ax3.grid()
+    ax3.plot()
+    plt.show()
+
+    ax4 = plt.subplot()
+    ax4.plot(self.angle_of_attack[:, 0], self.angle_of_attack[:, 1])
+    ax4.set_title("Angle of Attack")
+    ax4.set_xlabel("Time (s)")
+    ax4.set_ylabel("Angle of Attack (°)")
+    ax4.set_xlim(self.out_of_rail_time, self.apogee_time)
+    ax4.set_ylim(0, self.angle_of_attack(self.out_of_rail_time))
+    ax4.grid()
+    ax4.plot()
+    plt.show()
+
+    ax5 = plt.subplot()
+    ax5.plot(
+        self.partial_angle_of_attack[:, 0],
+        self.partial_angle_of_attack[:, 1],
+    )
+    ax5.set_title("Partial Angle of Attack")
+    ax5.set_xlabel("Time (s)")
+    ax5.set_ylabel("Partial Angle of Attack (°)")
+    ax5.set_xlim(self.out_of_rail_time, self.apogee_time)
+    ax5.set_ylim(
+        0, self.partial_angle_of_attack(self.out_of_rail_time)
+    )
+    ax5.grid()
+    ax5.plot()
+    plt.show()
+
+    ax6 = plt.subplot()
+    ax6.plot(
+        self.angle_of_sideslip[:, 0], self.angle_of_sideslip[:, 1]
+    )
+    ax6.set_title("Angle of Sideslip")
+    ax6.set_xlabel("Time (s)")
+    ax6.set_ylabel("Angle of Sideslip (°)")
+    ax6.set_xlim(self.out_of_rail_time, self.apogee_time)
+    ax6.set_ylim(
+        0, self.angle_of_sideslip(self.out_of_rail_time)
+    )
+    ax6.grid()
+    ax6.plot()
+    plt.show()
+
+    plt.subplots_adjust(hspace=0.5)
 
 def prints():
     print("Stage One \n")
@@ -229,8 +337,9 @@ drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
 
 # Print flight conditions 
 
-drag_sep()
-prints()
-plot_traj()
-draw()
-plot_all()
+#drag_sep()
+#prints()
+#plot_traj()
+#draw()
+#plot_all()
+fluid_mechanics(booster_flight)
