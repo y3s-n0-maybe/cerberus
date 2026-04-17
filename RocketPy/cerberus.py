@@ -1,3 +1,5 @@
+# For most up to date code: check github https://www.github.com/y3s-n0-maybe/cerberus
+
 from rocketpy import Environment, SolidMotor, Rocket, Flight, Parachute, NoseCone, TrapezoidalFins, RailButtons, Function, Tail
 
 import datetime, math, matplotlib.pyplot as plt, rocketpy.tools as tls, numpy as np
