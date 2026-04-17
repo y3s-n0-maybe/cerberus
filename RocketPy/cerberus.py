@@ -45,6 +45,41 @@ env.set_atmospheric_model(type = "Windy", file = "ICON")
 
 #env.set_atmospheric_model(type="custom_atmosphere", pressure=None, temperature=300, wind_u=[ (15, 8), (1000, 6) ], wind_v=[ (15, 0), (1000, 4.5) ], )
 
+def kinematics(self, *, filename=None):  # pylint: disable=too-many-statements
+    """Prints out all Kinematics graphs available about the Flight
+
+    Parameters
+    ----------
+    filename : str | None, optional
+        The path the plot should be saved to. By default None, in which case
+        the plot will be shown instead of saved. Supported file endings are:
+        eps, jpg, jpeg, pdf, pgf, png, ps, raw, rgba, svg, svgz, tif, tiff
+        and webp (these are the formats supported by matplotlib).
+
+    Returns
+    -------
+    None
+    """
+    ax4 = plt.subplot()
+    ax4.plot(self.speed[:, 0], self.speed[:, 1], color="#ff7f0e")
+    ax4.set_xlim(0, self.t_final)
+    ax4.set_title("Velocity Magnitude | Acceleration Magnitude")
+    ax4.set_xlabel("Time (s)")
+    ax4.set_ylabel("Velocity (m/s)", color="#ff7f0e")
+    ax4.tick_params("y", colors="#ff7f0e")
+    ax4.grid(True)
+
+    ax4up = ax4.twinx()
+    ax4up.plot(
+        self.acceleration[:, 0],
+        self.acceleration[:, 1],
+        color="#1f77b4",
+    )
+    ax4up.set_ylabel("Acceleration (m/s²)", color="#1f77b4")
+    ax4up.tick_params("y", colors="#1f77b4")
+
+    plt.show()
+
 def aerodynamics(self, *, filename=None):  # pylint: disable=too-many-statements
     """Prints out all Forces and Moments graphs available about the Flight
 
@@ -271,6 +306,18 @@ def drag_sep():
     sustainer_height = sustainer_flight.get_solution_at_time(booster_burnout + sustainer_delay)[3]
     print("Booster Height: ", booster_height, "\nSustainer Height: ", sustainer_height,"\nDistance at Ignition: ", sustainer_height - booster_height, "\n")
 
+def aerodynamics_plots():
+    aerodynamics(booster_flight)
+    aerodynamics(sustainer_flight)
+
+def fluid_mechanics_plots():
+    fluid_mechanics(booster_flight)
+    fluid_mechanics(sustainer_flight)
+
+def kinematics_plots():
+    kinematics(booster_flight)
+    kinematics(sustainer_flight)
+
 booster_motor = SolidMotor(
     coordinate_system_orientation = "nozzle_to_combustion_chamber",
     center_of_dry_mass_position = booster_motor_length / 2,
@@ -427,8 +474,13 @@ drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
 # Print flight conditions 
 
 #drag_sep()
-#prints()
+prints()
 #plot_traj()
 #draw()
 #plot_all()
-aerodynamics(sustainer_flight)
+
+# Print Seperated Plots
+
+#aerodynamics_plots()
+#fluid_mechanics_plots()
+#kinematics_plots()
