@@ -45,7 +45,7 @@ varDate = datetime.datetime(2026, 7, 1, hour = 12)
 env =  Environment(latitude = 55.435108, longitude = -5.691520, date = varDate)
 env.set_atmospheric_model(type = "Windy", file = "ICON") 
 
-#env.set_atmospheric_model(type="custom_atmosphere", pressure=None, temperature=300, wind_u=[ (15, 8), (1000, 6) ], wind_v=[ (15, 0), (1000, 4.5) ], )
+#env.set_atmospheric_model(type="custom_atmosphere", pressure=None, temperature=300, wind_u=[ (15, 5), (1000, 5) ], wind_v=[ (15, 0), (1000, 0) ], )
 
 def kinematics(self, *, filename=None):  # pylint: disable=too-many-statements
     """Prints out all Kinematics graphs available about the Flight
@@ -129,7 +129,7 @@ def aerodynamics(self, *, filename=None):  # pylint: disable=too-many-statements
         self.aerodynamic_drag[: tls.find_closest(self.time_steps, self.apogee_time), 1],
     )
     ax2.set_xlim(0, self.apogee_time)
-    ax2.set_ylim(0, 200)
+    ax2.set_ylim(0, 75)
     ax2.set_xlabel("Time (s)")
     ax2.set_ylabel("Drag Force (N)")
     ax2.set_title("Aerodynamic Drag Force")
@@ -477,7 +477,7 @@ drift = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
 
 #drag_sep()
 prints()
-#plot_traj()
+plot_traj()
 #draw()
 #plot_all()
 
